@@ -30,5 +30,19 @@ public class ClockFrame extends JFrame {
 
 		this.add(timeLabel);
 		this.setVisible(true);
+		setTime();
+	}
+
+	public void setTime() {
+		while (true) {
+			time = timeFormat.format(Calendar.getInstance().getTime());
+			timeLabel.setText(time);
+
+			try {
+				Thread.sleep(1000);
+			} catch (InterruptedException e) {
+				e.printStackTrace();
+			}
+		}
 	}
 }
