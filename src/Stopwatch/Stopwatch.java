@@ -92,22 +92,53 @@ public class Stopwatch implements ActionListener {
 	}
 
 	void start() {
+		// set the button to say "STOP"
 		started = true;
+		startButton.setText("STOP");
 		timer.start();
 	}
 
 	void stop() {
+		// set the button to say "START"
 		started = false;
+		startButton.setText("START");
+		timer.stop();
 	}
 
 	void reset() {
+		timer.stop();
+
+		// set elapsed time to be 0
+		elapsedTime = 0;
+		hours = 0;
+		minutes = 0;
+		seconds = 0;
+		decimalSeconds = 0;
+
+		// format the time display and set it
+		secondsString = String.format("%02d", seconds);
+		minutesString = String.format("%02d", minutes);
+		hoursString = String.format("%02d", hours);
+		decimalSecondsString = String.format("%d", decimalSeconds);
+		timeLabel.setText(hoursString + ":" + minutesString + ":" + secondsString + "." + decimalSecondsString);
 
 	}
 
 	@Override
 	public void actionPerformed(ActionEvent e) {
 		if (e.getSource() == startButton) {
-			start();
+			if (started) {
+				stop();
+			} else {
+				start();
+
+			}
+		}
+		if (e.getSource() == resetButton) {
+			if (!started) {
+				reset();
+			}
+
 		}
 	}
 }
