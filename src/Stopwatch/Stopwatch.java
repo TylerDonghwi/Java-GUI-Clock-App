@@ -16,9 +16,10 @@ public class Stopwatch implements ActionListener {
 
 	JFrame frame = new JFrame();
 	JButton startButton = new JButton("START");
-
 	JButton resetButton = new JButton("RESET");
 	JLabel timeLabel = new JLabel();
+	JLabel logLabel = new JLabel();
+	int numLogs = 0;
 
 	int elapsedTime = 0;
 	int decimalSeconds = 0;
@@ -68,44 +69,55 @@ public class Stopwatch implements ActionListener {
 
 		// label for the time
 		timeLabel.setText(hoursString + ":" + minutesString + ":" + secondsString + "." + decimalSecondsString);
-		timeLabel.setBounds(80, 50, 220, 100);
+		timeLabel.setBounds(20, 50, 220, 100);
 		timeLabel.setFont(new Font("Comic Sans MS", Font.PLAIN, 35));
 		timeLabel.setBorder(BorderFactory.createBevelBorder(1));
 		timeLabel.setOpaque(true);
 		timeLabel.setHorizontalAlignment(JTextField.CENTER);
 
+		// label for logs
+		logLabel.setBounds(250, 50, 120, 150);
+		logLabel.setFont(new Font("Comic Sans MS", Font.PLAIN, 16));
+		logLabel.setBorder(BorderFactory.createBevelBorder(1));
+		logLabel.setOpaque(true);
+		logLabel.setHorizontalAlignment(JTextField.LEFT);
+		logLabel.setVerticalAlignment(JTextField.TOP);
+
 		// set buttons
-		startButton.setBounds(80, 150, 110, 50);
+		startButton.setBounds(20, 150, 110, 50);
 		startButton.setFont(new Font("Comic Sans MS", Font.PLAIN, 20));
 		startButton.setFocusable(false);
 		startButton.addActionListener(this);
-		resetButton.setBounds(190, 150, 110, 50);
+		resetButton.setBounds(130, 150, 110, 50);
 		resetButton.setFont(new Font("Comic Sans MS", Font.PLAIN, 20));
 		resetButton.setFocusable(false);
 		resetButton.addActionListener(this);
 
 		// Add the components
 		frame.add(timeLabel);
+		frame.add(logLabel);
 		frame.add(startButton);
 		frame.add(resetButton);
 		frame.setVisible(true);
 	}
 
-	void start() {
-		// set the button to say "STOP"
+	public void start() {
+		// set the start button to say "STOP" and reset button to say "LOG"
 		started = true;
 		startButton.setText("STOP");
+		resetButton.setText("LOG");
 		timer.start();
 	}
 
-	void stop() {
-		// set the button to say "START"
+	public void stop() {
+		// set the start button to say "START" and reset button to say "RESET"
 		started = false;
 		startButton.setText("START");
+		resetButton.setText("RESET");
 		timer.stop();
 	}
 
-	void reset() {
+	public void reset() {
 		timer.stop();
 
 		// set elapsed time to be 0
@@ -124,6 +136,21 @@ public class Stopwatch implements ActionListener {
 
 	}
 
+	public void log() {
+		numLogs++;
+
+		// format the time display and set it
+		secondsString = String.format("%02d", seconds);
+		minutesString = String.format("%02d", minutes);
+		hoursString = String.format("%02d", hours);
+		decimalSecondsString = String.format("%d", decimalSeconds);
+		timeLabel.setText(hoursString + ":" + minutesString + ":" + secondsString + "." + decimalSecondsString);
+
+		// set the text
+		logLabel.setText(
+				numLogs + ". " + hoursString + ":" + minutesString + ":" + secondsString + "." + decimalSecondsString);
+	}
+
 	@Override
 	public void actionPerformed(ActionEvent e) {
 		if (e.getSource() == startButton) {
@@ -135,7 +162,13 @@ public class Stopwatch implements ActionListener {
 			}
 		}
 		if (e.getSource() == resetButton) {
-			if (!started) {
+
+			if (started) {
+				// if the stopwatch is running, it is a log button
+				log();
+
+			} else {
+				// if the stopwatch is not running it is a reset button
 				reset();
 			}
 
