@@ -21,7 +21,7 @@ public class Stopwatch implements ActionListener {
 	JLabel timeLabel = new JLabel();
 
 	int elapsedTime = 0;
-	int milliseconds = 0;
+	int decimalSeconds = 0;
 	int seconds = 0;
 	int minutes = 0;
 	int hours = 0;
@@ -33,24 +33,24 @@ public class Stopwatch implements ActionListener {
 	String secondsString = String.format("%02d", seconds);
 	String minutesString = String.format("%02d", minutes);
 	String hoursString = String.format("%02d", hours);
-	String millisecondsString = String.format("%02d", milliseconds * 10);
+	String decimalSecondsString = String.format("%d", decimalSeconds);
 
 	// Timer every 10 milliseconds
-	Timer timer = new Timer(10, new ActionListener() {
+	Timer timer = new Timer(100, new ActionListener() {
 		public void actionPerformed(ActionEvent e) {
-			elapsedTime += 10;
+			elapsedTime += 100;
 			// calculate time display
 			hours = elapsedTime / 3_600_000;
 			minutes = elapsedTime / 60_000 % 60;
 			seconds = elapsedTime / 1_000 % 60;
-			milliseconds = elapsedTime / 10 % 100;
+			decimalSeconds = elapsedTime / 100 % 10;
 
 			// format the time display and set it
 			secondsString = String.format("%02d", seconds);
 			minutesString = String.format("%02d", minutes);
 			hoursString = String.format("%02d", hours);
-			millisecondsString = String.format("%02d", milliseconds * 10);
-			timeLabel.setText(hoursString + ":" + minutesString + ":" + secondsString + ":" + millisecondsString);
+			decimalSecondsString = String.format("%d", decimalSeconds);
+			timeLabel.setText(hoursString + ":" + minutesString + ":" + secondsString + "." + decimalSecondsString);
 
 		}
 	});
@@ -63,10 +63,11 @@ public class Stopwatch implements ActionListener {
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		frame.setSize(400, 300);
 		frame.setLayout(null);
+		frame.setResizable(false);
 		frame.setLocationRelativeTo(null); // it will be created at the middle of the screen
 
 		// label for the time
-		timeLabel.setText(hoursString + ":" + minutesString + ":" + secondsString + ":" + millisecondsString);
+		timeLabel.setText(hoursString + ":" + minutesString + ":" + secondsString + "." + decimalSecondsString);
 		timeLabel.setBounds(80, 50, 220, 100);
 		timeLabel.setFont(new Font("Comic Sans MS", Font.PLAIN, 35));
 		timeLabel.setBorder(BorderFactory.createBevelBorder(1));
