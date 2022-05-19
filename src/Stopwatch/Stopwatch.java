@@ -9,6 +9,7 @@ import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JTextField;
+import javax.swing.Timer;
 
 // implements ActionListener as buttons are used
 public class Stopwatch implements ActionListener {
@@ -34,6 +35,26 @@ public class Stopwatch implements ActionListener {
 	String hoursString = String.format("%02d", hours);
 	String millisecondsString = String.format("%02d", milliseconds * 10);
 
+	// Timer every 10 milliseconds
+	Timer timer = new Timer(10, new ActionListener() {
+		public void actionPerformed(ActionEvent e) {
+			elapsedTime += 10;
+			// calculate time display
+			hours = elapsedTime / 3_600_000;
+			minutes = elapsedTime / 60_000 % 60;
+			seconds = elapsedTime / 1_000 % 60;
+			milliseconds = elapsedTime / 10 % 100;
+
+			// format the time display and set it
+			secondsString = String.format("%02d", seconds);
+			minutesString = String.format("%02d", minutes);
+			hoursString = String.format("%02d", hours);
+			millisecondsString = String.format("%02d", milliseconds * 10);
+			timeLabel.setText(hoursString + ":" + minutesString + ":" + secondsString + ":" + millisecondsString);
+
+		}
+	});
+
 	// constructor
 	public Stopwatch() {
 
@@ -53,8 +74,14 @@ public class Stopwatch implements ActionListener {
 		timeLabel.setHorizontalAlignment(JTextField.CENTER);
 
 		// set buttons
-		startButton.setBounds(80, 150, 100, 50);
-		resetButton.setBounds(200, 150, 100, 50);
+		startButton.setBounds(80, 150, 110, 50);
+		startButton.setFont(new Font("Comic Sans MS", Font.PLAIN, 20));
+		startButton.setFocusable(false);
+		startButton.addActionListener(this);
+		resetButton.setBounds(190, 150, 110, 50);
+		resetButton.setFont(new Font("Comic Sans MS", Font.PLAIN, 20));
+		resetButton.setFocusable(false);
+		resetButton.addActionListener(this);
 
 		// Add the components
 		frame.add(timeLabel);
@@ -65,6 +92,7 @@ public class Stopwatch implements ActionListener {
 
 	void start() {
 		started = true;
+		timer.start();
 	}
 
 	void stop() {
@@ -77,7 +105,8 @@ public class Stopwatch implements ActionListener {
 
 	@Override
 	public void actionPerformed(ActionEvent e) {
-		// TODO Auto-generated method stub
-
+		if (e.getSource() == startButton) {
+			start();
+		}
 	}
 }
