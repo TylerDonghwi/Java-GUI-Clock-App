@@ -8,6 +8,7 @@ import javax.swing.BorderFactory;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import javax.swing.Timer;
 
@@ -18,7 +19,7 @@ public class Stopwatch implements ActionListener {
 	JButton startButton = new JButton("START");
 	JButton resetButton = new JButton("RESET");
 	JLabel timeLabel = new JLabel();
-	JLabel logLabel = new JLabel();
+	JTextArea logs = new JTextArea();
 	int numLogs = 0;
 
 	int elapsedTime = 0;
@@ -76,12 +77,13 @@ public class Stopwatch implements ActionListener {
 		timeLabel.setHorizontalAlignment(JTextField.CENTER);
 
 		// label for logs
-		logLabel.setBounds(250, 50, 120, 150);
-		logLabel.setFont(new Font("Comic Sans MS", Font.PLAIN, 16));
-		logLabel.setBorder(BorderFactory.createBevelBorder(1));
-		logLabel.setOpaque(true);
-		logLabel.setHorizontalAlignment(JTextField.LEFT);
-		logLabel.setVerticalAlignment(JTextField.TOP);
+		logs.setBounds(250, 50, 120, 150);
+		logs.setFont(new Font("Comic Sans MS", Font.PLAIN, 16));
+		logs.setBorder(BorderFactory.createBevelBorder(1));
+		logs.setText("Logs:");
+		logs.setOpaque(true);
+		logs.setEditable(false);
+		logs.setLineWrap(true);
 
 		// set buttons
 		startButton.setBounds(20, 150, 110, 50);
@@ -95,7 +97,7 @@ public class Stopwatch implements ActionListener {
 
 		// Add the components
 		frame.add(timeLabel);
-		frame.add(logLabel);
+		frame.add(logs);
 		frame.add(startButton);
 		frame.add(resetButton);
 		frame.setVisible(true);
@@ -134,6 +136,7 @@ public class Stopwatch implements ActionListener {
 		decimalSecondsString = String.format("%d", decimalSeconds);
 		timeLabel.setText(hoursString + ":" + minutesString + ":" + secondsString + "." + decimalSecondsString);
 
+		logs.setText("Logs: ");
 	}
 
 	public void log() {
@@ -146,17 +149,22 @@ public class Stopwatch implements ActionListener {
 		decimalSecondsString = String.format("%d", decimalSeconds);
 		timeLabel.setText(hoursString + ":" + minutesString + ":" + secondsString + "." + decimalSecondsString);
 
+		String prevLogs = logs.getText();
+		String currentLogs = prevLogs + "\n" + numLogs + ". " + hoursString + ":" + minutesString + ":" + secondsString
+				+ "." + decimalSecondsString;
+
 		// set the text
-		logLabel.setText(
-				numLogs + ". " + hoursString + ":" + minutesString + ":" + secondsString + "." + decimalSecondsString);
+		logs.setText(currentLogs);
 	}
 
 	@Override
 	public void actionPerformed(ActionEvent e) {
 		if (e.getSource() == startButton) {
 			if (started) {
+				// if the stopwatch is running, it is a stop button
 				stop();
 			} else {
+				// if the stopwatch is not running, it is a start button
 				start();
 
 			}
@@ -166,7 +174,6 @@ public class Stopwatch implements ActionListener {
 			if (started) {
 				// if the stopwatch is running, it is a log button
 				log();
-
 			} else {
 				// if the stopwatch is not running it is a reset button
 				reset();
